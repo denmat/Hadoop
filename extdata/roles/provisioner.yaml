@@ -1,0 +1,104 @@
+httpd_package_list: 
+  'httpd': 
+    ensure: present
+  'mod_ssl':
+    ensure: present
+  'mod_passenger':
+    ensure: present
+
+httpd_service:
+  httpd:
+    enable: true
+    ensure: true
+
+httpd_conf:
+  '/etc/httpd/conf/httpd.conf':
+    ensure: present
+    source: "puppet:///modules/web/httpd/conf/default_httpd.conf"
+  '/etc/httpd/conf.d/sites-enabled':
+    ensure: directory
+    mode:   0755
+deploy_vhost_puppetmaster:
+  '/etc/httpd/conf.d/sites-enabled/puppetmaster.conf':
+    ensure: present
+    source: "puppet:///modules/web/httpd/vhost/puppetmaster.conf"
+  '/var/www/html/puppet':
+    ensure: directory
+    owner:  puppet
+    mode:   0755
+    recurse: true
+    source:  "puppet:///modules/provisioning/puppet/html/puppet"
+
+mcollective_client_password: 'apassword'
+stompd_client_password: 'apassword'
+stompd_host: 'puppet.mylocal'
+
+
+mcollective_service_enabled: true
+
+rabbitmq_service_enabled: true
+
+dns_master: latest
+dns_master_service: true
+
+puppet_package_deps:
+  ruby-devel:
+    ensure: installed
+    provider: yum
+
+puppet_package_list:
+  activerecord:
+    ensure: '3.0.12'
+    provider: gem
+  arel:
+    ensure: '2.0.10'
+    provider: gem
+  builder:
+    ensure: '2.1.2'
+    provider: gem
+  stomp:
+    ensure: '1.2.2'
+    provider: gem
+  pg:
+    ensure: present
+    provider: gem
+  puppet:
+    ensure: 'present'
+  facter:
+    ensure: 'present'
+puppet_testing_packages:
+  'cucumber-puppet':
+    ensure: 0.3.7
+    provider: gem
+  'database_cleaner':
+    ensure: 0.7.2
+    provider: gem
+puppet_master: puppet.us-e.mylocal
+puppet_certname: puppet.us-e.mylocal
+puppet_db_user: puppet
+puppet_db_password: 'apassword'
+puppet_pgsql_password: 'apassword'
+
+pgsql_package_list: 
+  'postgresql':
+     ensure: installed
+  'postgresql-server':
+     ensure: installed
+  'postgresql-libs':
+     ensure: installed
+  'postgresql-devel':
+     ensure: installed
+postgresql_server_base: '/var/lib/pgsql'
+postgresql_server_data: '/var/lib/pgsql/data'
+pgsql_config_files:
+  '/var/lib/pgsql/data/pg_hba.conf':
+    ensure: present
+    source: "puppet:///modules/provisioning/postgresql/pg_hba.conf"
+  '/var/lib/pgsql':
+    ensure: directory
+    mode:   0700
+  '/var/lib/pgsql/data':
+    ensure: directory
+    mode: 0700
+postgresql_encoding: UTF8
+postgresql_locale: en_US.UTF-8 

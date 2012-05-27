@@ -1,0 +1,43 @@
+yum_repos:
+  epel:
+    name: 'epel'
+    descr: 'EPEL repo'
+    mirrorlist: "https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch"
+    failovermethod: 'priority'
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: "https://fedoraproject.org/static/0608B895.txt"
+
+  puppetlabs:
+    name: 'puppetlabs-prod'
+    descr: 'Puppet Labs Prod 6'
+    baseurl: 'http://yum.puppetlabs.com/el/6/products/$basearch'
+    gpgkey: 'http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs'
+    enabled: 1
+    gpgcheck: 1
+
+  puppetlabs-deps:
+    name: 'puppetlabs-deps'
+    descr: 'Puppet Labs Deps 6'
+    baseurl: 'http://yum.puppetlabs.com/el/6/dependencies/$basearch'
+    gpgkey: 'http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs'
+    enabled: 1
+    gpgcheck: 1
+
+  passenger:
+    name: 'passenger'
+    descr: 'StealthMonkeys Yum repo for passenger'
+    baseurl: 'http://passenger.stealthymonkeys.com/rhel/6/x86_64'
+    enabled: 1
+    gpgkey: 'http://passenger.stealthymonkeys.com/RPM-GPG-KEY-stealthymonkeys.asc'
+    gpgcheck: 1
+
+yumrepos::cloudera:
+    cloudera:
+      name: 'cloudera'
+      descr: 'Cloudera 3'
+      baseurl: 'http://archive.cloudera.com/redhat/cdh/3'
+      gpgkey: 'http://archive.cloudera.com/redhat/cdh/RPM-GPG-KEY-cloudera'
+      gpgcheck: 1
+
+

@@ -1,0 +1,62 @@
+hadoop_common_packages:
+  'hadoop-0.20':
+    ensure: installed
+    provider: yum
+  'jre-1.6.0_31-fcs.x86_64':
+    ensure: installed
+    provider: rpm
+    source: '/shared/downloads/jre-6u31-linux-amd64.rpm'
+
+hadoop_version: '0.20'
+namenode::httpd_port: 50070
+namenode::fs_port: 8020
+datanode::httpd_port: 50075
+jobtracker::httpd_port: 50030
+tasktracker::httpd_port: 50060
+hadoop_namenode: 'node1'
+hadoop_jobtracker: 'node1'
+hadoop_default_dirs: [ '/data/1',
+                       '/data/2',
+		       '/data/3',
+		       '/data/4' ]
+hadoop_data_dir: 'hadoop'
+hadoop_fs_replication: '3'
+hadoop_map_tasks_max: '3'
+hadoop_reduce_tasks_max: '2'
+
+
+hadoop_namenode::hadoop_package_list: 'hadoop-0.20-namenode'
+hadoop_datanode::hadoop_package_list: [ 'hadoop-0.20-datanode', 'hadoop-0.20-tasktracker' ]
+hadoop_jobtracker::hadoop_package_list: 'hadoop-0.20-jobtracker'
+
+hadoop::namenode_service:
+  'hadoop-0.20-namenode':
+    hasrestart: true
+    hasstatus:  true
+
+hadoop::datanode_service:
+  'hadoop-datanode-0.20':
+    hasrestart: true
+    hasstatus:  true
+
+hadoop::jobtracker_service:
+  'hadoop-jobtracker-0.20':
+    hasrestart: true
+    hasstatus:  true
+
+hadoop::tasktracker_service:
+  'hadoop-tasktracker-0.20':
+    hasrestart: true
+    hasstatus:  true
+
+hadoop_common::cluster_files:
+  '/etc/hadoop/conf.default/hdfs-site.xml':
+    content: template('hadoop/config/hdfs-site.xml.erb')
+  '/etc/hadoop/conf.default/core-site.xml':
+    content: template('hadoop/config/core-site.xml.erb')
+  '/etc/hadoop/conf.default/mapred-site.xml':
+    content: template('hadoop/config/mapred-site.xml.erb')
+  '/etc/hadoop/conf.default/hadoop-env.sh':
+    source: 'puppet:///modules/hadoop/client/hadoop-env.sh'
+  '/etc/hadoop/conf.default/log4j.properties':
+    source: 'puppet:///modules/hadoop/client/log4j.properties'
