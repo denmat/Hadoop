@@ -1,8 +1,7 @@
 class roles {
 
   # add hosts to dns and issue restart of dnsmasq
-#  include dns
-#    dns::add_node { "$::fqdn": }
+  include dns::add_node
 
   # add admin users to all hosts.
 
