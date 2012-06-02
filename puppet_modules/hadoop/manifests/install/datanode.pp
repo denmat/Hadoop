@@ -1,9 +1,11 @@
 class hadoop::install::datanode {
-  include hadoop::install 
 
-  $hadoop_datanode_list = hiera('hadoop_datanode::hadoop_package_list')
+  $hadoop_namenode_list = "hadoop-0.20-datanode"
 
-  create_resources(package, $hadoop_datanode_list)
-
+  package {$hadoop_namenode_list: 
+    ensure  => latest, 
+    require => Package['jre-1.6.0_31-fcs.x86_64'] 
+  }
+ 
 } #end class
 

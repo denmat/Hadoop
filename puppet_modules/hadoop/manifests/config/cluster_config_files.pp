@@ -1,33 +1,28 @@
-class hadoop::config::cluster_config_files inherits hadoop::cluster_config  {
+class hadoop::config::cluster_config_files {
 
+  File <| tag == 'common_config_files' |> ->
 
-  File ["$hadoop::config::hadoop_config_dir/hdfs-site.xml"] {  
-    notify  => Service[$get_service],
-    require => Service[$get_service],
-    content => template('hadoop/config/hdfs-site.xml.erb'),
+  @file {  
+  '/etc/hadoop-0.20/conf.default/hdfs-site.xml':
+    ensure  => present,
+    content => template("hadoop/config/hdfs-site.xml.erb"),
+    tag     => 'cluster_files';
+  '/etc/hadoop-0.20/conf.default/core-site.xml':
+    ensure  => present,
+    content => template("hadoop/config/core-site.xml.erb"),
+    tag     => 'cluster_files';
+  '/etc/hadoop-0.20/conf.default/mapred-site.xml':
+    ensure  => present,
+    content => template("hadoop/config/mapred-site.xml.erb"),
+    tag     => 'cluster_files';
+  '/etc/hadoop-0.20/conf.default/hadoop-env.sh':
+    ensure  => present,
+    source  => 'puppet:///modules/hadoop/client/hadoop-env.sh',
+    tag     => 'cluster_files';
+  '/etc/hadoop-0.20/conf.default/log4j.properties':
+    ensure  => present,
+    source  => 'puppet:///modules/hadoop/client/log4j.properties',
+    tag     => 'cluster_files';
   }
-  File ["$hadoop::config::hadoop_config_dir/core-site.xml"] {  
-    notify  => Service[$get_service],
-    require => Service[$get_service],
-    content => template('hadoop/config/core-site.xml.erb'),
-  }
-  File ["$hadoop::config::hadoop_config_dir/mapred-site.xml"] {  
-    notify  => Service[$get_service],
-    require => Service[$get_service],
-    content => template('hadoop/config/mapred-site.xml.erb'),
-  }
-  File ["$hadoop::config::hadoop_config_dir/hadoop-env.sh"] {
-    source => "puppet:///modules/hadoop/client/hadoop-env.sh"
-  }
-  File ["$hadoop::config::hadoop_config_dir/log4j.properties"] {
-    source => "puppet:///modules/hadoop/client/log4j.properties"
-  }
-  File ["$hadoop::config::hadoop_config_dir/fair-scheduler.xml"] {
-    notify  => Service[$get_service],
-    require => Service[$get_service],
-    content => template('hadoop/config/fair-scheduler.xml.erb'),
-  }
- 
-  File <| tag == 'hadoop_config_cluster_files' |> 
+
 } #end class
-

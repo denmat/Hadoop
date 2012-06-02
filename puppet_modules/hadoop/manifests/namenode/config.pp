@@ -1,7 +1,6 @@
 class hadoop::namenode::config {
   include hadoop::config
   include hadoop::install::namenode
-  include hadoop::services::namenode_service
   include hadoop::namenode::cluster_config_files
 
   # This sets the option to format the hdfs -- warning --warning.
@@ -16,17 +15,25 @@ class hadoop::namenode::config {
   Group <| tag == 'hadoop_node' |> -> 
   User <| tag == 'hadoop_node' |> -> 
   File <| tag == 'hadoop_default_dirs' |> ->
+  file { '/usr/lib/hadoop-0.20/logs/SecurityAuth.audit':
+    ensure  => present,
+    owner   => 'hdfs',
+    mode    => 0644,
+    require => Package['hadoop-0.20-namenode']
+  } ->
 
-  hadoop::namenode::create_namenode_dirs {$hadoop::config::hadoop_default_dirs:  }
+  hadoop::namenode::create_namenode_dirs {$hadoop::config::hadoop_default_dirs:  } 
 
   # here is where we format the HDFS. We have a 2 minute grace time built into the
   # formatting -- enough time to warn people. 
   if $format_hdfs_on_namenode {
-    notify {"formatting_warning": }
+    notify {"formatting_warning": 
+      require => [Package['hadoop-0.20-namenode'], Hadoop::Namenode::Create_namenode_dirs[$hadoop::config::hadoop_default_dirs]] 
+    }
 
     exec {"format_hdfs":
       command => "/bin/sleep 10s; /usr/bin/sudo -u hdfs sh -c 'yes Y | /usr/bin/hadoop --config /etc/hadoop/conf namenode -format' && touch /root/hdfs_formated_`date +%s`",
-      require => [Notify["formatting_warning"],Service['hadoop-0.20-namenode']],
+      require => [Notify["formatting_warning"],Service['hadoop-0.20-namenode'],Package['hadoop-0.20-namenode']],
     }
     exec {"start_hadoop_for_config":
       command => "/sbin/service hadoop-0.20-namenode start",

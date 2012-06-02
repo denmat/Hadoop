@@ -1,5 +1,6 @@
 class hadoop::config {
   include hadoop::install::common
+  include hadoop::services::iptables
 
   # common hadoop settings:
   $hadoop_config_dir       = "/etc/hadoop-0.20/conf.default"
@@ -41,6 +42,17 @@ class hadoop::config {
     mode   => 0755,
     require => Package['hadoop-0.20'],
     tag    => 'common_config_files',
+  }
+
+  @file { "/var/log/hadoop-0.20":
+    ensure => directory,
+    owner  => 'hdfs',
+    mode   => 0755,
+    tag    => 'common_config_files',
+  }
+
+  if hadoop_role !~ /client/ {
+    hadoop::config::common_dirs { $hadoop_default_dirs: }
   }
 
   @exec {"set_config_alternatives":

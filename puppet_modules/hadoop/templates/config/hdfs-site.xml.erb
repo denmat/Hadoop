@@ -12,7 +12,7 @@
  
     <property>
 	<name>dfs.data.dir</name>
-	<value> <%= scope.lookupvar('hadoop::config::hadoop_default_dirs').collect {|hadoop_disk| hadoop_disk + "/hdfs/dfs/data"}.join(',') -%> </value>
+	<value> <%= scope.lookupvar('hadoop::config::hadoop_default_dirs').collect {|hadoop_disk| hadoop_disk + "/hadoop/dfs/data"}.join(',') -%> </value>
     </property>
 
     <property>

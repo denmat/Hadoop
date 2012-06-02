@@ -4,7 +4,7 @@
 <configuration>
   <property>
     <name>fs.default.name</name>
-    <value>hdfs://<%= scope.lookupvar('hadoop::config::hadoop_name_node') -%>:8020</value>
+    <value>hdfs://<%= scope.lookupvar('hadoop::config::hadoop_namenode') -%>:8020</value>
   </property>
 
   <property>
