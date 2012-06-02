@@ -8,7 +8,7 @@ define provisioning::postgresql::pgsql_create_db {
     command => "/usr/bin/createdb $new_db",
     onlyif  => "/usr/bin/test `psql -l |grep  -c $new_db` -eq 0",
     user    => 'postgres',
-    require => Class['provisioning::postgresql::install_pgsql'],
+    require => [Class['provisioning::postgresql::install_pgsql'],Service['postgresql']],
     notify  => Exec['set_password']
   }
 

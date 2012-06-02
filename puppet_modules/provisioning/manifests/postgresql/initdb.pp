@@ -1,5 +1,5 @@
 class provisioning::postgresql::initdb {
-
+  include provisioning::postgresql::service
   require provisioning::postgresql::install_pgsql
 
   $postgresql_server_base = hiera('postgresql_server_base')
@@ -12,6 +12,8 @@ class provisioning::postgresql::initdb {
       command => "/usr/bin/initdb -D ${postgresql_server_data} -E ${postgresql_encoding} --locale=${postgresql_locale}",
       user => postgres,
       creates => "${postgresql_server_data}/PG_VERSION",
-      require => Package['postgresql-server']
+      require => Package['postgresql-server'],
+      notify  => Service['postgresql']
   }
+
 }
